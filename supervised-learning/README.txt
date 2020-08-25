@@ -1,12 +1,11 @@
-# How to run this code
+# How to run this project's code
 
-## Download Julia
-Using a linux machine, perform the following actions:
-1. Download the Julia 1.5 binaries from https://julialang.org/downloads/
+1. Set Up Julia
+    Download the Julia 1.5 binaries from https://julialang.org/downloads/
     and follow platform specific instructions
     (https://julialang.org/downloads/platform/) to install them.
 
-    on linux, run:
+    On linux, run:
     ```
     cd ~/
     wget https://julialang-s3.julialang.org/bin/linux/x64/1.5/julia-1.5.0-linux-x86_64.tar.gz
@@ -18,12 +17,26 @@ Using a linux machine, perform the following actions:
     where `~/.local/bin/` is a dir on your system's $PATH variable. Omit the
     `mkdir ~/.local/bin/` line if you want to put it somewhere else .
 
-## Clone github repository
+2. Clone github repository
+    Download the project from gitlab (https://github.com/adinhobl/Machine-Learning)
+    On linux, run:
+    ```
+    git clone https://github.com/adinhobl/machine-learning.git
+    cd machine-learning/supervised-learning
+    ```
+    from the command line. 
 
+3. Install dependencies
+    Enter Julia prompt by typing:
+    ```
+    julia
+    ```
+    at the command line. If it is on your $PATH, it should run. 
+    Next type:
+    ```
+    ] instantiate
+    ```
+    This should load all the project's packages from the Project.toml and
+    Manifest.toml files
 
-
-
-## Install dependencies
-
-
-## Run file
+4. Run file
