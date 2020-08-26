@@ -39,4 +39,15 @@
     This should load all the project's packages from the Project.toml and
     Manifest.toml files
 
-4. Run file
+4. To run the jupyter notebook, you will need jupyter installed on your current path, either in a conda environment, or locally.
+    Alternatively, Julia can download it if you run:
+    ```
+    ] build IJulia
+    ``` 
+    from the Julia prompt. Then navigate to the appropriate directory, and run
+    ```
+    using IJulia
+    notebook(dir=pwd())
+    ```
+
+5. 
