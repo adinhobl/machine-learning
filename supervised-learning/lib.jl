@@ -1,0 +1,1 @@
+acc(ŷ, y) = (mode.(ŷ) .== y) |> mean
