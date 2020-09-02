@@ -37,9 +37,23 @@
     ] instantiate
     ```
     This should load all the project's packages from the Project.toml and
-    Manifest.toml files
+    Manifest.toml files. Hit backspace to get back to the Julia prompt from the Pkg screen
 
-4. To run the jupyter notebook, you will need jupyter installed on your current path, either in a conda environment, or locally.
+4. Make sure Scikit-Learn is installed with conda (or pip) and they are usable in python
+    I did this from the command line:
+    ```
+    conda install scikit-learn
+    ```
+    (type `exit()` to exit julia prompt)
+
+5. Make sure PyCall works to interface with SKLearn
+    Next type:
+    ```
+    using Pkg
+    Pkg.build("PyCall")
+    ```
+
+6. To run the jupyter notebook, you will need jupyter installed on your current path, either in a conda environment, or locally.
     Alternatively, Julia can download it if you run:
     ```
     ] build IJulia
@@ -50,4 +64,4 @@
     notebook(dir=pwd())
     ```
 
-5. 
+7. 
