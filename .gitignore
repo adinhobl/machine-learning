@@ -25,4 +25,5 @@ Manifest.toml
 
 # Additional
 supervised-learning/*/.ipynb_checkpoints/
+*/.vscode
 *-checkpoint.ipynb
