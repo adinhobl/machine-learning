@@ -44,10 +44,9 @@
     ```
     conda install scikit-learn
     ```
-    (type `exit()` to exit julia prompt)
 
 5. Make sure PyCall works to interface with SKLearn
-    Next type:
+    Next type this in the julia prompt:
     ```
     using Pkg
     Pkg.build("PyCall")
