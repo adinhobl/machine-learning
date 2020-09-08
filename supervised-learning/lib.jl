@@ -6,7 +6,7 @@ function learn_curve(model, X, y, meas=accuracy; rng=545)
     
     #split training data into training and holdout
     train, valid = partition(eachindex(y), 0.8, shuffle=true, rng=rng)
-    data_schedule = range(10, size(train)[1]; step=1)
+    data_schedule = range(10, size(train)[1]; step=5)
     
     #iterate over dataset size
     for d in data_schedule
