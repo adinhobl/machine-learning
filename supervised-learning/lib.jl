@@ -17,6 +17,7 @@ function learn_curve(model, X, y, meas=accuracy; rng=545, step=5)
         push!(training_losses, train_metric)
         #test against holdout
         valid_metric = meas(MLJ.predict(m, X[valid,:]), y[valid])
+        # @show MLJ.predict(m, X[valid,:]), y[valid]
         push!(valid_losses, valid_metric)
         @show d, train_metric, valid_metric
     end
