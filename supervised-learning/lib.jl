@@ -23,3 +23,16 @@ function learn_curve(model, X, y, meas=accuracy; rng=545, step=5)
     
     return data_schedule, training_losses, valid_losses    
 end
+
+function separate_bases(df)
+    d = map(s->[i for i in strip(s)], df[:,3])
+    a = zeros(size(d)[1], size(d[1])[1])
+    # a = Array{Char,2}(undef,(size(d)[1], size(d[1])[1]))
+
+    
+    for i in 1:size(a)[1]
+        a[i,:] = d[i]
+    end
+    
+    return DataFrame(a)
+end
