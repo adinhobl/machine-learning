@@ -55,3 +55,5 @@
    1. 46.08 percent are L
    2. 07.84 percent are B
    3. 46.08 percent are R
+
+OBTAINED FROM: https://archive.ics.uci.edu/ml/datasets/Balance+Scale

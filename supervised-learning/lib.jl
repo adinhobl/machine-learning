@@ -1,9 +1,15 @@
 acc(ŷ, y) = (mode.(ŷ) .== y) |> mean
 
-function learn_curve(model, X, y, meas=accuracy; rng=545, step=5)
+function learn_curve(model, X, y, meas=accuracy; rng=545, step=5, pm=false)
     training_losses = []
     valid_losses = []
     
+    if pm
+        pred = predict_mode
+    else
+        pred = MLJ.predict
+    end
+
     #split training data into training and holdout
     train, valid = partition(eachindex(y), 0.8, shuffle=true, rng=rng)
     data_schedule = range(10, size(train)[1]; step=step)
@@ -13,10 +19,10 @@ function learn_curve(model, X, y, meas=accuracy; rng=545, step=5)
         mach = machine(model, X[train,:], y[train])
         m = fit!(mach, rows=collect(1:d), force=true, verbosity=0)
         #add loss to training_losses
-        train_metric = meas(MLJ.predict(m, X[train[1:d],:]), y[train[1:d]])
+        train_metric = meas(pred(m, X[train[1:d],:]), y[train[1:d]])
         push!(training_losses, train_metric)
         #test against holdout
-        valid_metric = meas(MLJ.predict(m, X[valid,:]), y[valid])
+        valid_metric = meas(pred(m, X[valid,:]), y[valid])
         # @show MLJ.predict(m, X[valid,:]), y[valid]
         push!(valid_losses, valid_metric)
         @show d, train_metric, valid_metric

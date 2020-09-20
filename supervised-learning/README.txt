@@ -63,4 +63,7 @@
     notebook(dir=pwd())
     ```
 
-7. 
+7. Datasets are included with the code in the repository, but can also
+   separately be downloaded from the following locations:
+    https://archive.ics.uci.edu/ml/datasets/QSAR+biodegradation# 
+    https://archive.ics.uci.edu/ml/datasets/Balance+Scale 
