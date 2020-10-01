@@ -7,34 +7,6 @@ import pandas as pd
 seed = 121
 np.random.seed(seed=seed)
 
-# Define the first problem:
-# Want the largest sum. Each term is found by multiplying the index of the term times
-# the value of the term. This incentivizes later numbers being larger. The second condition is
-# that the value of each term has to be either odd or even like the index, or its counts 
-# against the total.
-
-def toothymax(state, punishment=0):
-    """
-    Total equals the sum of the number times its index. Numbers that aren't the same parity as 
-    their index are punished. Reused numbers are punished.
-    """
-    fitness = 0.0
-    tracker = []
-    for i in range(len(state)):
-        if state[i] in tracker:
-            fitness += punishment
-        elif state[i] % 2 == 0 and i % 2 == 0:
-            fitness += (state[i] * i)**0.5
-            tracker.append(state[i])
-        elif state[i] % 2 != 0 and i % 2 != 0:
-            fitness += (state[i] * i)**0.5
-            tracker.append(state[i])
-        else:
-            fitness += punishment
-            tracker.append(state[i])
-    
-    return fitness
-
 print(f"######### SETUP #########\n")
 
 attempts = 5000
@@ -52,7 +24,7 @@ m_times = []
 test_range = [3,5,8,10,15,20,30]
 final_prob_len = 60
 
-fitness_cust = mlr.CustomFitness(toothymax)
+fitness_cust = mlr.Queens()
 schedule = mlr.ArithDecay()
 
 print(f"Attempts:            {attempts}")
@@ -60,9 +32,10 @@ print(f"Max Iterations:      {max_it}")
 print(f"Problem Sizes:       {test_range}")
 print(f"Last Problem Size:   {final_prob_len}\n\n")
 
-print(f"\n######### PART 2 #########\n")
-
 part2_time = 0.0
+
+
+print(f"\n######### PART 2 #########\n")
 
 for i in test_range:
     start = time.time()
@@ -119,7 +92,7 @@ print(f"\n\nPart 2 Time Elapsed: {part2_time}\n")
 print(f"######### PART 1 #########\n")
 
 print(f"  Problem Length: {final_prob_len}\n")
-print(f"  Max Fitness: {toothymax(np.arange(0,final_prob_len))}\n")
+print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
 
 init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
@@ -148,9 +121,9 @@ print(f"  Best State:\n{best_rhc_state}")
 print(f"  Fitness Curve:\n{rhc_curve}")
 print(f"  Elapsed: {end - start}")
 
-# print(sorted(best_rhc_state))
+print(sorted(best_rhc_state))
 
-## Simulated Annealing
+# # Simulated Annealing
 # print(f"\n=== Simulated Annealing - ExpDecay ===")
 # schedule = mlr.ExpDecay()
 # start = time.time()
@@ -170,9 +143,9 @@ print(f"  Elapsed: {end - start}")
 # print(f"  Fitness Curve:\n{sa_curve}")
 # print(f"  Elapsed: {end - start}")
 
-## print(sorted(best_sa_state))
+# print(sorted(best_sa_state))
 
-## Simulated Annealing
+# # Simulated Annealing
 # print(f"\n=== Simulated Annealing - GeomDecay ===")
 # schedule = mlr.GeomDecay()
 # start = time.time()
@@ -192,7 +165,7 @@ print(f"  Elapsed: {end - start}")
 # print(f"  Fitness Curve:\n{sa_curve}")
 # print(f"  Elapsed: {end - start}")
 
-## print(sorted(best_sa_state))
+# print(sorted(best_sa_state))
 
 ## Simulated Annealing
 print(f"\n=== Simulated Annealing - ArithDecay ===")
@@ -214,7 +187,7 @@ print(f"  Best State:\n{best_sa_state}")
 print(f"  Fitness Curve:\n{sa_curve}")
 print(f"  Elapsed: {end - start}")
 
-# print(sorted(best_sa_state))
+print(sorted(best_sa_state))
 
 ## Genetic Algorithm
 print(f"\n=== Genetic Algorithm ===")
@@ -235,7 +208,7 @@ print(f"  Best State:\n{best_ga_state}")
 print(f"  Fitness Curve:\n{ga_curve}")
 print(f"  Elapsed: {end - start}")
 
-# print(sorted(best_ga_state))
+print(sorted(best_ga_state))
 
 ## MIMIC
 print(f"\n=== MIMIC ===")
@@ -256,14 +229,13 @@ print(f"  Best State:\n{best_m_state}")
 print(f"  Fitness Curve:\n{m_curve}")
 print(f"  Elapsed: {end - start}")
 
-# print(sorted(best_m_state))
+print(sorted(best_m_state))
 
 print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
 
 print(f"\n\nTotal Time Elapsed: {part1_time + part2_time}\n")
 
 ## Plotting
-
 print("Plotting Part 1\n")
 fig1 = plt.figure()
 ax1 = fig1.add_subplot(1,1,1)
@@ -276,7 +248,7 @@ ax1.set_xlabel("Iterations")
 ax1.set_ylabel("Fitness")
 
 plt.legend()
-plt.savefig("Opt1Part1.png")
+plt.savefig("Opt2Part1.png")
 
 # Plotting
 print("Plotting Part 2\n\n")
@@ -293,7 +265,7 @@ ax2.set_xlabel("Problem Dimension")
 ax2.set_ylabel("Final Fitness")
 
 plt.legend()
-plt.savefig("Opt1Part2Fitnesses.png")
+plt.savefig("Opt2Part2Fitnesses.png")
 
 fig3 = plt.figure()
 ax3 = fig3.add_subplot(1,1,1)
@@ -307,7 +279,7 @@ ax3.set_xlabel("Problem Dimension")
 ax3.set_ylabel("Runtime (s)")
 
 plt.legend()
-plt.savefig("Opt1Part2Times.png")
+plt.savefig("Opt2Part2Times.png")
 
 ## Saving data
 part2df = pd.DataFrame()
@@ -320,7 +292,7 @@ part2df["sa_times"] = sa_times
 part2df["ga_times"] = ga_times
 part2df["m_times"] = m_times
 
-part2df.to_csv("Opt1Part2data.csv")
+part2df.to_csv("Opt2Part2data.csv")
 
 part1df = pd.DataFrame()
 part1df["rhc_curve"] = rhc_curve
@@ -328,6 +300,6 @@ part1df["sa_curve"] = rhc_curve
 part1df["ga_curve"] = rhc_curve
 part1df["m_curve"] = m_curve
 
-part1df.to_csv("Opt1Part1data.csv")
+part1df.to_csv("Opt2Part1data.csv")
 
 
