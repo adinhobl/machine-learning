@@ -92,7 +92,7 @@ print(f"\n\nPart 2 Time Elapsed: {part2_time}\n")
 print(f"######### PART 1 #########\n")
 
 print(f"  Problem Length: {final_prob_len}\n")
-print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
+# print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
 
 init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 

@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 import pandas as pd
 
-seed = 121
+seed = 187
 np.random.seed(seed=seed)
 
 print(f"######### SETUP #########\n")
@@ -22,7 +22,7 @@ ga_times = []
 m_times = []
 
 test_range = [3,5,8,10,15,20,30]
-final_prob_len = 8
+final_prob_len = 97
 
 fitness_cust = mlr.FourPeaks()
 schedule = mlr.ArithDecay()
@@ -44,7 +44,7 @@ part2_time = 0.0
 
 #     init = np.random.choice([0,1], size=i, replace=True)
 #     problem = mlr.DiscreteOpt(length=i, fitness_fn=fitness_cust, 
-#                           maximize=True, max_val=1)
+#                           maximize=True, max_val=2)
 
 #     ## Randomized Hill Climbing
 #     sub_start = time.time()
@@ -93,11 +93,11 @@ part2_time = 0.0
 print(f"######### PART 1 #########\n")
 
 print(f"  Problem Length: {final_prob_len}\n")
-print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
+# print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
 
 init = np.random.choice([0,1], size=final_prob_len, replace=True)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
-                          maximize=True, max_val=1)
+                          maximize=True, max_val=2)
 
 part1_time = 0.0
 print(f"  Initialization:\n{init}")
@@ -249,7 +249,7 @@ ax1.set_xlabel("Iterations")
 ax1.set_ylabel("Fitness")
 
 plt.legend()
-plt.savefig("Opt2Part1.png")
+plt.savefig("Opt3Part1.png")
 
 # # Plotting
 # print("Plotting Part 2\n\n")
@@ -266,7 +266,7 @@ plt.savefig("Opt2Part1.png")
 # ax2.set_ylabel("Final Fitness")
 
 # plt.legend()
-# plt.savefig("Opt2Part2Fitnesses.png")
+# plt.savefig("Opt3Part2Fitnesses.png")
 
 # fig3 = plt.figure()
 # ax3 = fig3.add_subplot(1,1,1)
@@ -280,7 +280,7 @@ plt.savefig("Opt2Part1.png")
 # ax3.set_ylabel("Runtime (s)")
 
 # plt.legend()
-# plt.savefig("Opt2Part2Times.png")
+# plt.savefig("Opt3Part2Times.png")
 
 # ## Saving data
 # part2df = pd.DataFrame()
@@ -293,7 +293,7 @@ plt.savefig("Opt2Part1.png")
 # part2df["ga_times"] = ga_times
 # part2df["m_times"] = m_times
 
-# part2df.to_csv("Opt2Part2data.csv")
+# part2df.to_csv("Opt3Part2data.csv")
 
 # part1df = pd.DataFrame()
 # part1df["rhc_curve"] = rhc_curve
@@ -301,6 +301,6 @@ plt.savefig("Opt2Part1.png")
 # part1df["ga_curve"] = rhc_curve
 # part1df["m_curve"] = m_curve
 
-# part1df.to_csv("Opt2Part1data.csv")
+# part1df.to_csv("Opt3Part1data.csv")
 
 
