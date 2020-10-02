@@ -10,7 +10,7 @@ np.random.seed(seed=seed)
 print(f"######### SETUP #########\n")
 
 attempts = 500#5000
-max_it = 3000 #3000
+max_it = 2000 #3000
 
 rhc_fitnesses = []
 sa_fitnesses = []
