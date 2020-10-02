@@ -9,8 +9,8 @@ np.random.seed(seed=seed)
 
 print(f"######### SETUP #########\n")
 
-attempts = 5000
-max_it = 3000
+attempts = 500#5000
+max_it = 3000 #3000
 
 rhc_fitnesses = []
 sa_fitnesses = []
@@ -21,7 +21,7 @@ sa_times = []
 ga_times = []
 m_times = []
 
-test_range = [3,5,8,10,15,20,30]
+test_range = [5,8,10,15,20,30]
 final_prob_len = 60
 
 fitness_cust = mlr.Queens()
@@ -121,7 +121,7 @@ print(f"  Best State:\n{best_rhc_state}")
 print(f"  Fitness Curve:\n{rhc_curve}")
 print(f"  Elapsed: {end - start}")
 
-print(sorted(best_rhc_state))
+# print(sorted(best_rhc_state))
 
 # # Simulated Annealing
 # print(f"\n=== Simulated Annealing - ExpDecay ===")
@@ -187,7 +187,7 @@ print(f"  Best State:\n{best_sa_state}")
 print(f"  Fitness Curve:\n{sa_curve}")
 print(f"  Elapsed: {end - start}")
 
-print(sorted(best_sa_state))
+# print(sorted(best_sa_state))
 
 ## Genetic Algorithm
 print(f"\n=== Genetic Algorithm ===")
@@ -208,7 +208,7 @@ print(f"  Best State:\n{best_ga_state}")
 print(f"  Fitness Curve:\n{ga_curve}")
 print(f"  Elapsed: {end - start}")
 
-print(sorted(best_ga_state))
+# print(sorted(best_ga_state))
 
 ## MIMIC
 print(f"\n=== MIMIC ===")
@@ -229,7 +229,7 @@ print(f"  Best State:\n{best_m_state}")
 print(f"  Fitness Curve:\n{m_curve}")
 print(f"  Elapsed: {end - start}")
 
-print(sorted(best_m_state))
+# print(sorted(best_m_state))
 
 print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
 
@@ -248,7 +248,7 @@ ax1.set_xlabel("Iterations")
 ax1.set_ylabel("Fitness")
 
 plt.legend()
-plt.savefig("Opt2Part1.png")
+plt.savefig("Opt2/Part1.png")
 
 # Plotting
 print("Plotting Part 2\n\n")
@@ -265,7 +265,7 @@ ax2.set_xlabel("Problem Dimension")
 ax2.set_ylabel("Final Fitness")
 
 plt.legend()
-plt.savefig("Opt2Part2Fitnesses.png")
+plt.savefig("Opt2/Part2Fitnesses.png")
 
 fig3 = plt.figure()
 ax3 = fig3.add_subplot(1,1,1)
@@ -279,7 +279,7 @@ ax3.set_xlabel("Problem Dimension")
 ax3.set_ylabel("Runtime (s)")
 
 plt.legend()
-plt.savefig("Opt2Part2Times.png")
+plt.savefig("Opt2/Part2Times.png")
 
 ## Saving data
 part2df = pd.DataFrame()
@@ -292,14 +292,14 @@ part2df["sa_times"] = sa_times
 part2df["ga_times"] = ga_times
 part2df["m_times"] = m_times
 
-part2df.to_csv("Opt2Part2data.csv")
+part2df.to_csv("Opt2/Part2data.csv")
 
 part1df = pd.DataFrame()
 part1df["rhc_curve"] = rhc_curve
-part1df["sa_curve"] = rhc_curve
-part1df["ga_curve"] = rhc_curve
+part1df["sa_curve"] = sa_curve
+part1df["ga_curve"] = ga_curve
 part1df["m_curve"] = m_curve
 
-part1df.to_csv("Opt2Part1data.csv")
+part1df.to_csv("Opt2/Part1data.csv")
 
 

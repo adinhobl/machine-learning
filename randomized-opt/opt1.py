@@ -276,7 +276,7 @@ ax1.set_xlabel("Iterations")
 ax1.set_ylabel("Fitness")
 
 plt.legend()
-plt.savefig("Opt1Part1.png")
+plt.savefig("Opt1/Part1.png")
 
 # Plotting
 print("Plotting Part 2\n\n")
@@ -293,7 +293,7 @@ ax2.set_xlabel("Problem Dimension")
 ax2.set_ylabel("Final Fitness")
 
 plt.legend()
-plt.savefig("Opt1Part2Fitnesses.png")
+plt.savefig("Opt1/Part2Fitnesses.png")
 
 fig3 = plt.figure()
 ax3 = fig3.add_subplot(1,1,1)
@@ -307,7 +307,7 @@ ax3.set_xlabel("Problem Dimension")
 ax3.set_ylabel("Runtime (s)")
 
 plt.legend()
-plt.savefig("Opt1Part2Times.png")
+plt.savefig("Opt1/Part2Times.png")
 
 ## Saving data
 part2df = pd.DataFrame()
@@ -320,7 +320,7 @@ part2df["sa_times"] = sa_times
 part2df["ga_times"] = ga_times
 part2df["m_times"] = m_times
 
-part2df.to_csv("Opt1Part2data.csv")
+part2df.to_csv("Opt1/Part2data.csv")
 
 part1df = pd.DataFrame()
 part1df["rhc_curve"] = rhc_curve
@@ -328,6 +328,6 @@ part1df["sa_curve"] = rhc_curve
 part1df["ga_curve"] = rhc_curve
 part1df["m_curve"] = m_curve
 
-part1df.to_csv("Opt1Part1data.csv")
+part1df.to_csv("Opt1/Part1data.csv")
 
 
