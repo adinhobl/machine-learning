@@ -9,8 +9,9 @@ np.random.seed(seed=seed)
 
 print(f"######### SETUP #########\n")
 
-attempts = 500#5000
-max_it = 2000 #3000
+
+max_it = 300
+attempts = max_it * 3/4
 
 rhc_fitnesses = []
 sa_fitnesses = []
@@ -21,11 +22,11 @@ sa_times = []
 ga_times = []
 m_times = []
 
-test_range = [5,8,10,15,20,30]
-final_prob_len = 60
+test_range = [4,6,8,10,15,20,25,30]
+final_prob_len = 45
 
 fitness_cust = mlr.Queens()
-schedule = mlr.ArithDecay()
+schedule = mlr.ArithDecay(init_temp=5)
 
 print(f"Attempts:            {attempts}")
 print(f"Max Iterations:      {max_it}")
@@ -246,6 +247,7 @@ ax1.plot(m_curve, label="MIMIC")
 
 ax1.set_xlabel("Iterations")
 ax1.set_ylabel("Fitness")
+ax1.set_title(f"Fitness vs. Iterations, n={final_prob_len}")
 
 plt.legend()
 plt.savefig("Opt2/Part1.png")
@@ -261,8 +263,9 @@ ax2.plot(test_range,sa_fitnesses, label="Simulated Annealing")
 ax2.plot(test_range,ga_fitnesses, label="Genetic Algorithm")
 ax2.plot(test_range,m_fitnesses, label="MIMIC")
 
-ax2.set_xlabel("Problem Dimension")
+ax2.set_xlabel("Problem Size")
 ax2.set_ylabel("Final Fitness")
+ax2.set_title(f"Final Fitness vs. Problem Size")
 
 plt.legend()
 plt.savefig("Opt2/Part2Fitnesses.png")
@@ -275,8 +278,9 @@ ax3.plot(test_range,sa_times, label="Simulated Annealing")
 ax3.plot(test_range,ga_times, label="Genetic Algorithm")
 ax3.plot(test_range,m_times, label="MIMIC")
 
-ax3.set_xlabel("Problem Dimension")
+ax3.set_xlabel("Problem Size")
 ax3.set_ylabel("Runtime (s)")
+ax3.set_title(f"Runtime vs. Problem Size")
 
 plt.legend()
 plt.savefig("Opt2/Part2Times.png")
