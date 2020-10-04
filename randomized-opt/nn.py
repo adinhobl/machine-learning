@@ -62,42 +62,50 @@ iters = [10,50,100,300,500,800,1000]
 # print(f"Valid Accuracy:\n  {valid_acc}")
 
 
-#simulated annealing
-print("\n\n######### SA #########")
-sa_fitnesses = []
-sa_times = []
-for i in np.linspace(3.5,4.5,num=50):
-    print(f"LR: {i}")
-    sch = mlr.GeomDecay() #mlr.ArithDecay mlr.ExpDecay
-    nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
-                            algorithm='random_hill_climb', max_iters=1000, random_state=seed,
-                            learning_rate=i,
-                            early_stopping=False,
-                            schedule=sch)
+## simulated annealing
+# print("\n\n######### SA #########")
+# sa_fitnesses = []
+# sa_times = []
 
-    nn_sa.fit(X_train_std, y_train)
-    train_pred = nn_sa.predict(X_train_std)
-    valid_pred = nn_sa.predict(X_valid_std)
-    train_acc = accuracy_score(y_train, train_pred)
-    valid_acc = accuracy_score(y_valid, valid_pred)
+#     sch = mlr.GeomDecay() #mlr.ArithDecay mlr.ExpDecay
+#     nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
+#                             algorithm='random_hill_climb', max_iters=iters[-1], random_state=seed,
+#                             learning_rate=3.57,
+#                             early_stopping=False,
+#                             schedule=sch)
+
+#     nn_sa.fit(X_train_std, y_train)
+#     train_pred = nn_sa.predict(X_train_std)
+#     valid_pred = nn_sa.predict(X_valid_std)
+#     train_acc = accuracy_score(y_train, train_pred)
+#     valid_acc = accuracy_score(y_valid, valid_pred)
 
     # print(f"Fitness:\n{nn_sa.fitness_curve}")
     # print(f"Loss:\n{nn_sa.loss}")
     # print(f"Training Accuracy:\n  {train_acc}")
-    print(f"Valid Accuracy:\n  {valid_acc}")
+    # print(f"Valid Accuracy:\n  {valid_acc}")
 
 
 # #genetic algorithm
-# print("\n\n######### GA #########")
-# ga_fitnesses = []
-# ga_times = []
+print("\n\n######### GA #########")
+ga_fitnesses = []
+ga_times = []
+for i in np.linspace(1.9,2.3,num=30):
+    print(f"LR: {i}")
+    nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
+                            algorithm='random_hill_climb', max_iters=iters[-1], random_state=seed,
+                            learning_rate=i,
+                            early_stopping=False,
+                            pop_size=400,
+                            mutation_prob= 0.2)
 
-# nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
-#                            algorithm='random_hill_climb', max_iters=mi, random_state=seed,
-#                            learning_rate=0.1,
-#                            early_stopping=False,
-#                            pop_size= 200,
-#                            mutation_prob= 0.2)
+    nn_ga.fit(X_train_std, y_train)
+    train_pred = nn_ga.predict(X_train_std)
+    valid_pred = nn_ga.predict(X_valid_std)
+    train_acc = accuracy_score(y_train, train_pred)
+    valid_acc = accuracy_score(y_valid, valid_pred)
 
-# nn_ga.fit(X_train_std, y_train)
-
+    # print(f"Fitness:\n{nn_ga.fitness_curve}")
+    # print(f"Loss:\n{nn_ga.loss}")
+    # print(f"Training Accuracy:\n  {train_acc}")
+    print(f"Valid Accuracy:\n  {valid_acc}")
