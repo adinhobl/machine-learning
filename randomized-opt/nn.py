@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 
 seed = 123
 
-## Prep Data
+## Setup
 print("######### Setup #########")
 data = pd.read_csv("randomized-opt/NN/data.csv")
 data["Class"] = data["Class"].map({"RB":1, "NRB":0})
@@ -32,33 +32,42 @@ X_test_std = scaler.transform(X_test)
 
 print(f"Data Sizes: \n  X_train: {X_train_std.shape}\n  X_valid: {X_valid_std.shape}\n  X_test: {X_test.shape}\n  y_train: {y_train.shape}\n  y_valid: {y_valid.shape}\n  y_test: {y_test.shape}\n")
 
-
 hidden_nodes = [132]
-mi = 1000
+iters = [10,50,100,300,500,800,1000]
+
 
 #randomized hill climbing
 print("\n######### RHC #########")
+rhc_fitnesses = []
+rhc_times = []
+for i in np.linspace(1.4,1.7,num=10):
+    print(f"LR: {i}")
+    nn_rhc = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True, 
+                            algorithm='random_hill_climb', max_iters=iters[-1], random_state=seed,
+                            learning_rate=i,
+                            early_stopping=False,
+                            restarts=100)
 
-nn_rhc = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True, 
-                           algorithm='random_hill_climb', max_iters=mi, random_state=seed,
-                           learning_rate=0.2,
-                           early_stopping=False,
-                           restarts=100)
+    start = time.time()
+    nn_rhc.fit(X_train_std, y_train)
+    end = time.time()
 
-nn_rhc.fit(X_train_std, y_train)
-train_pred = nn_rhc.predict(X_train_std)
-valid_pred = nn_rhc.predict(X_valid_std)
-train_acc = accuracy_score(y_train, train_pred)
-valid_acc = accuracy_score(y_valid, valid_pred)
+    train_pred = nn_rhc.predict(X_train_std)
+    valid_pred = nn_rhc.predict(X_valid_std)
+    train_acc = accuracy_score(y_train, train_pred)
+    valid_acc = accuracy_score(y_valid, valid_pred)
 
-print(f"Fitness:\n{nn_rhc.fitness_curve}")
-print(f"Loss:\n{nn_rhc.loss}")
-print(f"Training Accuracy:\n  {train_acc}")
-print(f"Valid Accuracy:\n  {valid_acc}")
+    # print(f"Fitness:\n{nn_rhc.fitness_curve}")
+    # print(f"Loss:\n{nn_rhc.loss}")
+    print(f"Training Accuracy:\n  {train_acc}")
+    print(f"Valid Accuracy:\n  {valid_acc}")
 
 
 # #simulated annealing
 # print("\n\n######### SA #########")
+# sa_fitnesses = []
+# sa_times = []
+
 # sch = mlr.GeomDecay() #mlr.ArithDecay mlr.ExpDecay
 # nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
 #                            algorithm='random_hill_climb', max_iters=mi, random_state=seed,
@@ -71,6 +80,9 @@ print(f"Valid Accuracy:\n  {valid_acc}")
 
 # #genetic algorithm
 # print("\n\n######### GA #########")
+# ga_fitnesses = []
+# ga_times = []
+
 # nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
 #                            algorithm='random_hill_climb', max_iters=mi, random_state=seed,
 #                            learning_rate=0.1,

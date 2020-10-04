@@ -7,10 +7,20 @@ import pandas as pd
 seed = 121
 np.random.seed(seed=seed)
 
+# different than if they had to be in order, then location would matter. This isn't necessarily
+# harder or easier than the alternative, just better suited to some
+def mults_of_2(state):
+    fitness = 0
+    for i in range(len(state)):
+        a = 2**(i+1)
+        if a in state:
+            fitness += a
+        else:
+            break
+    return fitness
+
 print(f"######### SETUP #########\n")
-
-
-max_it = 300
+max_it = 5000
 attempts = max_it * 3/4
 
 rhc_fitnesses = []
@@ -22,11 +32,11 @@ sa_times = []
 ga_times = []
 m_times = []
 
-test_range = [4,6,8,10,15,20,25,30]
-final_prob_len = 45
+test_range = [3,4,5,6]
+final_prob_len = 7
 
-fitness_cust = mlr.Queens()
-schedule = mlr.ArithDecay(init_temp=5)
+fitness_cust = mlr.CustomFitness(mults_of_2)
+schedule = mlr.GeomDecay(init_temp=10, decay=0.95)
 
 print(f"Attempts:            {attempts}")
 print(f"Max Iterations:      {max_it}")
@@ -42,9 +52,9 @@ for i in test_range:
     start = time.time()
     print(f"Running for subproblem size: {i}")
 
-    init = np.random.choice(i, size=i, replace=False)
+    init = np.random.choice(2**(i+1), size=i, replace=False)
     problem = mlr.DiscreteOpt(length=i, fitness_fn=fitness_cust, 
-                          maximize=True, max_val=i)
+                          maximize=True, max_val=2**(i+1))
 
     ## Randomized Hill Climbing
     sub_start = time.time()
@@ -95,9 +105,9 @@ print(f"######### PART 1 #########\n")
 print(f"  Problem Length: {final_prob_len}\n")
 # print(f"  Max Fitness: {fitness_cust.evaluate(np.arange(0,final_prob_len))}\n")
 
-init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
+init = np.random.choice(2**(final_prob_len+1), size=final_prob_len, replace=False)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
-                          maximize=True, max_val=final_prob_len)
+                          maximize=True, max_val=2**(final_prob_len+1))
 
 part1_time = 0.0
 print(f"  Initialization:\n{init}")
@@ -108,7 +118,7 @@ start = time.time()
 best_rhc_state, best_rhc_fitness, rhc_curve = mlr.random_hill_climb(problem, 
                                                           max_attempts=attempts,
                                                           random_state=seed, curve=True,
-                                                          init_state=init, restarts=500,
+                                                          init_state=init, restarts=100,
                                                           max_iters=max_it)
                                                           
 end = time.time()
@@ -124,47 +134,47 @@ print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_rhc_state))
 
-# # Simulated Annealing
-# print(f"\n=== Simulated Annealing - ExpDecay ===")
-# schedule = mlr.ExpDecay()
-# start = time.time()
-# best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
-#                                                           max_attempts=attempts, random_state=seed, 
-#                                                           curve=True, init_state=init,
-#                                                           max_iters=max_it)
+# Simulated Annealing
+print(f"\n=== Simulated Annealing - ExpDecay ===")
+schedule = mlr.ExpDecay()
+start = time.time()
+best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
+                                                          max_attempts=attempts, random_state=seed, 
+                                                          curve=True, init_state=init,
+                                                          max_iters=max_it)
                                                           
-# end = time.time()
-# part1_time += end - start
+end = time.time()
+part1_time += end - start
 
-# rhc_fitnesses.append(best_sa_fitness)
-# rhc_times.append(end - start)
+rhc_fitnesses.append(best_sa_fitness)
+rhc_times.append(end - start)
 
-# print(f"  Fitness: {best_sa_fitness}")
-# print(f"  Best State:\n{best_sa_state}")
-# print(f"  Fitness Curve:\n{sa_curve}")
-# print(f"  Elapsed: {end - start}")
+print(f"  Fitness: {best_sa_fitness}")
+print(f"  Best State:\n{best_sa_state}")
+print(f"  Fitness Curve:\n{sa_curve}")
+print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_sa_state))
 
-# # Simulated Annealing
-# print(f"\n=== Simulated Annealing - GeomDecay ===")
-# schedule = mlr.GeomDecay()
-# start = time.time()
-# best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
-#                                                           max_attempts=attempts, random_state=seed, 
-#                                                           curve=True, init_state=init,
-#                                                           max_iters=max_it)
+# Simulated Annealing
+print(f"\n=== Simulated Annealing - GeomDecay ===")
+schedule = mlr.GeomDecay()
+start = time.time()
+best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
+                                                          max_attempts=attempts, random_state=seed, 
+                                                          curve=True, init_state=init,
+                                                          max_iters=max_it)
                                                           
-# end = time.time()
-# part1_time += end - start
+end = time.time()
+part1_time += end - start
 
-# sa_fitnesses.append(best_sa_fitness)
-# sa_times.append(end - start)
+sa_fitnesses.append(best_sa_fitness)
+sa_times.append(end - start)
 
-# print(f"  Fitness: {best_sa_fitness}")
-# print(f"  Best State:\n{best_sa_state}")
-# print(f"  Fitness Curve:\n{sa_curve}")
-# print(f"  Elapsed: {end - start}")
+print(f"  Fitness: {best_sa_fitness}")
+print(f"  Best State:\n{best_sa_state}")
+print(f"  Fitness Curve:\n{sa_curve}")
+print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_sa_state))
 
@@ -193,7 +203,7 @@ print(f"  Elapsed: {end - start}")
 ## Genetic Algorithm
 print(f"\n=== Genetic Algorithm ===")
 start = time.time()
-best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=200, 
+best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=500, 
                                                           max_attempts=attempts, random_state=seed, 
                                                           curve=True, mutation_prob=0.1,
                                                           max_iters=max_it)
@@ -214,7 +224,7 @@ print(f"  Elapsed: {end - start}")
 ## MIMIC
 print(f"\n=== MIMIC ===")
 start = time.time()
-best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=300, 
+best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=500, 
                                                 max_attempts=attempts, 
                                                 random_state=seed, curve=True,
                                                 max_iters=max_it)
