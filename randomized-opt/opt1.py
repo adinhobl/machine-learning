@@ -260,10 +260,53 @@ print(f"  Elapsed: {end - start}")
 
 print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
 
-print(f"\n\nTotal Time Elapsed: {part1_time + part2_time}\n")
 
-## Plotting
+print(f"######### PART 3 #########\n")
 
+print(f"  Problem Length: {final_prob_len}\n")
+print(f"  Max Fitness: {toothymax(np.arange(0,final_prob_len))}\n")
+
+init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
+problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
+                          maximize=True, max_val=final_prob_len)
+
+pop_sizes = [10,20,50,100,200,400,500,1000]
+pop_fitnesses = []
+pop_times = []
+
+start = time.time()
+for i in pop_sizes:
+    it_start = time.time()
+    best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=i, 
+                                                            max_attempts=attempts, random_state=seed, 
+                                                            curve=True, mutation_prob=0.1,
+                                                            max_iters=max_it)
+    it_end = time.time()
+    pop_fitnesses.append(best_ga_fitness)
+    pop_times.append(it_end-it_start)
+
+mut_probs = list(np.linspace(0.01, 0.5, 10))
+mut_fitnesses = []
+mut_times = []
+
+start = time.time()
+for i in mut_probs:
+    it_start = time.time()
+    best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=200, 
+                                                            max_attempts=attempts, random_state=seed, 
+                                                            curve=True, mutation_prob=i,
+                                                            max_iters=max_it)
+    it_end = time.time()
+    mut_fitnesses.append(best_ga_fitness)
+    mut_times.append(it_end-it_start)
+
+
+end = time.time()
+part3_time = end-start
+
+print(f"\n\nTotal Time Elapsed: {part1_time + part2_time + part3_time}\n")
+
+## Plotting part 1
 print("Plotting Part 1\n")
 fig1 = plt.figure()
 ax1 = fig1.add_subplot(1,1,1)
@@ -279,8 +322,8 @@ ax1.set_title(f"Fitness vs. Iterations, n={final_prob_len}")
 plt.legend()
 plt.savefig("Opt1/Part1.png")
 
-# Plotting
-print("Plotting Part 2\n\n")
+# Plotting part 2
+print("Plotting Part 2\n")
 
 test_range.append(final_prob_len)
 fig2 = plt.figure()
@@ -312,25 +355,74 @@ ax3.set_title(f"Runtime vs. Problem Size")
 plt.legend()
 plt.savefig("Opt1/Part2Times.png")
 
-## Saving data
-part2df = pd.DataFrame()
-part2df["rhc_fitnesses"] = rhc_fitnesses
-part2df["sa_fitnesses"] = sa_fitnesses
-part2df["ga_fitnesses"] = ga_fitnesses
-part2df["m_fitnesses"] = m_fitnesses
-part2df["rhc_times"] = rhc_times
-part2df["sa_times"] = sa_times
-part2df["ga_times"] = ga_times
-part2df["m_times"] = m_times
+# Plotting part 3
+print("Plotting Part 3\n\n")
 
-part2df.to_csv("Opt1/Part2data.csv")
+fig4 = plt.figure()
+ax4 = fig4.add_subplot(1,1,1)
+ax4.plot(pop_sizes,pop_fitnesses)
 
-part1df = pd.DataFrame()
-part1df["rhc_curve"] = rhc_curve
-part1df["sa_curve"] = rhc_curve
-part1df["ga_curve"] = rhc_curve
-part1df["m_curve"] = m_curve
+ax4.set_xlabel("Population Size")
+ax4.set_ylabel("Final Fitness")
+ax4.set_title(f"Final Fitness vs. Population Size")
 
-part1df.to_csv("Opt1/Part1data.csv")
+# plt.legend()
+plt.savefig("Opt1/Part3popsize.png")
+
+fig5 = plt.figure()
+ax5 = fig5.add_subplot(1,1,1)
+ax5.plot(pop_sizes,pop_times)
+
+ax5.set_xlabel("Population Size")
+ax5.set_ylabel("Runtime (s)")
+ax5.set_title(f"Runtime (s) vs. Population Size")
+
+# plt.legend()
+plt.savefig("Opt1/Part3poptimes.png")
+
+
+fig6 = plt.figure()
+ax6 = fig6.add_subplot(1,1,1)
+ax6.plot(mut_probs,mut_fitnesses)
+
+ax6.set_xlabel("Mutation Rate")
+ax6.set_ylabel("Final Fitness")
+ax6.set_title(f"Final Fitness vs. Mutation Rate")
+
+# plt.legend()
+plt.savefig("Opt1/Part3mutrat.png")
+
+fig7 = plt.figure()
+ax7 = fig7.add_subplot(1,1,1)
+ax7.plot(mut_probs,mut_times)
+
+ax7.set_xlabel("Mutation Rate")
+ax7.set_ylabel("Runtime (s)")
+ax7.set_title(f"Runtime (s) vs. Mutation Rate")
+
+# plt.legend()
+plt.savefig("Opt1/Part3muttimes.png")
+
+
+# ## Saving data
+# part2df = pd.DataFrame()
+# part2df["rhc_fitnesses"] = rhc_fitnesses
+# part2df["sa_fitnesses"] = sa_fitnesses
+# part2df["ga_fitnesses"] = ga_fitnesses
+# part2df["m_fitnesses"] = m_fitnesses
+# part2df["rhc_times"] = rhc_times
+# part2df["sa_times"] = sa_times
+# part2df["ga_times"] = ga_times
+# part2df["m_times"] = m_times
+
+# part2df.to_csv("Opt1/Part2data.csv")
+
+# part1df = pd.DataFrame()
+# part1df["rhc_curve"] = rhc_curve
+# part1df["sa_curve"] = rhc_curve
+# part1df["ga_curve"] = rhc_curve
+# part1df["m_curve"] = m_curve
+
+# part1df.to_csv("Opt1/Part1data.csv")
 
 
