@@ -36,7 +36,7 @@ test_range = [3,4,5,6]
 final_prob_len = 7
 
 fitness_cust = mlr.CustomFitness(mults_of_2)
-schedule = mlr.GeomDecay(init_temp=10, decay=0.95)
+schedule = mlr.GeomDecay(init_temp=10, decay=0.95, min_temp=0.01)
 
 print(f"Attempts:            {attempts}")
 print(f"Max Iterations:      {max_it}")
@@ -134,31 +134,31 @@ print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_rhc_state))
 
-# Simulated Annealing
-print(f"\n=== Simulated Annealing - ExpDecay ===")
-schedule = mlr.ExpDecay()
-start = time.time()
-best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
-                                                          max_attempts=attempts, random_state=seed, 
-                                                          curve=True, init_state=init,
-                                                          max_iters=max_it)
+## Simulated Annealing
+# print(f"\n=== Simulated Annealing - ExpDecay ===")
+# schedule = mlr.ExpDecay()
+# start = time.time()
+# best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
+#                                                           max_attempts=attempts, random_state=seed, 
+#                                                           curve=True, init_state=init,
+#                                                           max_iters=max_it)
                                                           
-end = time.time()
-part1_time += end - start
+# end = time.time()
+# part1_time += end - start
 
-rhc_fitnesses.append(best_sa_fitness)
-rhc_times.append(end - start)
+# rhc_fitnesses.append(best_sa_fitness)
+# rhc_times.append(end - start)
 
-print(f"  Fitness: {best_sa_fitness}")
-print(f"  Best State:\n{best_sa_state}")
-print(f"  Fitness Curve:\n{sa_curve}")
-print(f"  Elapsed: {end - start}")
+# print(f"  Fitness: {best_sa_fitness}")
+# print(f"  Best State:\n{best_sa_state}")
+# print(f"  Fitness Curve:\n{sa_curve}")
+# print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_sa_state))
 
 # Simulated Annealing
 print(f"\n=== Simulated Annealing - GeomDecay ===")
-schedule = mlr.GeomDecay()
+schedule = mlr.GeomDecay(init_temp=10, decay=0.95, min_temp=0.01)
 start = time.time()
 best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
                                                           max_attempts=attempts, random_state=seed, 
@@ -179,26 +179,26 @@ print(f"  Elapsed: {end - start}")
 # print(sorted(best_sa_state))
 
 ## Simulated Annealing
-print(f"\n=== Simulated Annealing - ArithDecay ===")
-schedule = mlr.ArithDecay()
-start = time.time()
-best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
-                                                          max_attempts=attempts, random_state=seed, 
-                                                          curve=True, init_state=init,
-                                                          max_iters=max_it)
+# print(f"\n=== Simulated Annealing - ArithDecay ===")
+# schedule = mlr.ArithDecay()
+# start = time.time()
+# best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
+#                                                           max_attempts=attempts, random_state=seed, 
+#                                                           curve=True, init_state=init,
+#                                                           max_iters=max_it)
                                                           
-end = time.time()
-part1_time += end - start
+# end = time.time()
+# part1_time += end - start
 
-sa_fitnesses.append(best_sa_fitness)
-sa_times.append(end - start)
+# sa_fitnesses.append(best_sa_fitness)
+# sa_times.append(end - start)
 
-print(f"  Fitness: {best_sa_fitness}")
-print(f"  Best State:\n{best_sa_state}")
-print(f"  Fitness Curve:\n{sa_curve}")
-print(f"  Elapsed: {end - start}")
+# print(f"  Fitness: {best_sa_fitness}")
+# print(f"  Best State:\n{best_sa_state}")
+# print(f"  Fitness Curve:\n{sa_curve}")
+# print(f"  Elapsed: {end - start}")
 
-# print(sorted(best_sa_state))
+## print(sorted(best_sa_state))
 
 ## Genetic Algorithm
 print(f"\n=== Genetic Algorithm ===")
@@ -242,9 +242,12 @@ print(f"  Elapsed: {end - start}")
 
 # print(sorted(best_m_state))
 
-print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
+print(f"rhc_curve: {rhc_curve}")
+print(f"sa_curve:  {sa_curve}")
+print(f"ga_curve:  {ga_curve}")
+print(f"m_curve:   {m_curve}")
 
-print(f"\n\nTotal Time Elapsed: {part1_time + part2_time}\n")
+print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
 
 ## Plotting
 print("Plotting Part 1\n")
@@ -263,7 +266,7 @@ plt.legend()
 plt.savefig("Opt2/Part1.png")
 
 # Plotting
-print("Plotting Part 2\n\n")
+print("Plotting Part 2\n")
 
 test_range.append(final_prob_len)
 fig2 = plt.figure()
@@ -295,6 +298,52 @@ ax3.set_title(f"Runtime vs. Problem Size")
 plt.legend()
 plt.savefig("Opt2/Part2Times.png")
 
+print(f"######### PART 3 #########\n")
+
+print(f"  Problem Length: {final_prob_len}\n")
+
+init = np.random.choice(2**(final_prob_len+1), size=final_prob_len, replace=False)
+problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
+                          maximize=True, max_val=2**(final_prob_len+1))
+
+print(init)
+decays = [1,0.5,0.25,0.125,0.0625,0.03125,0.015,0.00725,0.00375]
+_fitnesses = []
+_times = []
+
+start = time.time()
+for i in decays:
+    sch = mlr.ArithDecay(10, i, 0.0001)
+    it_start = time.time()
+    best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=sch, 
+                                                          max_attempts=attempts, random_state=seed, 
+                                                          curve=True, init_state=init,
+                                                          max_iters=1000)
+    it_end = time.time()
+    print(i, best_sa_fitness, best_sa_state)
+    _fitnesses.append(best_sa_fitness)
+    _times.append(it_end-it_start)
+
+end = time.time()
+part3_time = end-start
+
+print(f"\n\nTotal Time Elapsed: {part1_time + part2_time + part3_time}\n")
+
+
+# Plotting part 3
+print("Plotting Part 3\n\n")
+
+fig4 = plt.figure()
+ax4 = fig4.add_subplot(1,1,1)
+ax4.plot(decays,_fitnesses)
+
+ax4.set_xlabel("Decay Rate")
+ax4.set_ylabel("Final Fitness")
+ax4.set_title(f"Final Fitness vs. Decay Rate")
+
+# plt.legend()
+plt.savefig("Opt2/Part3decay.png")
+
 ## Saving data
 part2df = pd.DataFrame()
 part2df["rhc_fitnesses"] = rhc_fitnesses
@@ -308,12 +357,12 @@ part2df["m_times"] = m_times
 
 part2df.to_csv("Opt2/Part2data.csv")
 
-part1df = pd.DataFrame()
-part1df["rhc_curve"] = rhc_curve
-part1df["sa_curve"] = sa_curve
-part1df["ga_curve"] = ga_curve
-part1df["m_curve"] = m_curve
+# part1df = pd.DataFrame()
+# part1df["rhc_curve"] = rhc_curve
+# part1df["sa_curve"] = sa_curve
+# part1df["ga_curve"] = ga_curve
+# part1df["m_curve"] = m_curve
 
-part1df.to_csv("Opt2/Part1data.csv")
+# part1df.to_csv("Opt2/Part1data.csv")
 
 

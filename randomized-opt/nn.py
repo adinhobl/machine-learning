@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
-seed = 123
+seed = 1134 #124
 
 ## Data
 print("######### Setup #########")
@@ -33,11 +33,12 @@ X_test_std = scaler.transform(X_test)
 print(f"Data Sizes: \n  X_train: {X_train_std.shape}\n  X_valid: {X_valid_std.shape}\n  X_test: {X_test.shape}\n  y_train: {y_train.shape}\n  y_valid: {y_valid.shape}\n  y_test: {y_test.shape}\n")
 
 ## Setup
-ga_pop = 400
-ga_mut = 0.325
+rhc_restarts = 1#100
+ga_pop = 2#100
+ga_mut = 0.01 #0.2
 hidden_nodes = [132]
-iters = [10,50,100,300,500,800,1000,2000,5000]
-final_its = 10000
+iters = [10,50,100,300,500,800,1000,2000] #,5000
+final_its = 5000 #10000
 rhc_losses = []
 rhc_times = []
 rhc_train = []
@@ -55,11 +56,12 @@ for i in iters:
     print(f"Iters: {i}")
 
     #randomized hill climbing
+    its = i * 5
     nn_rhc = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=False, 
-                            algorithm='random_hill_climb', max_iters=i, random_state=seed,
-                            learning_rate=1.7,
+                            algorithm='random_hill_climb', max_iters=its, random_state=seed,
+                            learning_rate=0.96, # 1.7,
                             early_stopping=False,
-                            restarts=200)
+                            restarts=rhc_restarts)
 
     start = time.time()
     nn_rhc.fit(X_train_std, y_train)
@@ -78,11 +80,12 @@ for i in iters:
     print(f"  RHC Valid Acc: {valid_acc}")
 
     # simulated annealing
-    mint = 0.001; maxt = 2; r = (mint/maxt)**(1/i)
-    sch = mlr.GeomDecay(maxt, r, mint) #mlr.ArithDecay mlr.ExpDecay
+    its = i * 5
+    min_t = 0.0001; max_t = 1.5; r = 0.002 #r = (mint/maxt)**(1/i)
+    sch = mlr.ArithDecay(max_t, r, min_t) #mlr.ArithDecay mlr.ExpDecay
     nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=False,
-                            algorithm='simulated_annealing', max_iters=i, random_state=seed,
-                            learning_rate=3.57,
+                            algorithm='simulated_annealing', max_iters=its, random_state=seed,
+                            learning_rate=0.5, #3.57
                             early_stopping=False,
                             schedule=sch)
 
@@ -104,7 +107,7 @@ for i in iters:
     # genetic algorithm
     nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=False,
                             algorithm='genetic_alg', max_iters=i, random_state=seed,
-                            learning_rate=2.106,
+                            learning_rate=1.16, #2.106,
                             early_stopping=False,
                             pop_size=ga_pop,
                             mutation_prob= ga_mut)
@@ -128,11 +131,12 @@ for i in iters:
 #randomized hill climbing
 print("\n######### RHC #########")
 
+its = final_its
 nn_rhc = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True, 
-                        algorithm='random_hill_climb', max_iters=final_its, random_state=seed,
-                        learning_rate=1.7,
+                        algorithm='random_hill_climb', max_iters=its, random_state=seed,
+                        learning_rate=0.96, # 1.7,
                         early_stopping=False,
-                        restarts=100)
+                        restarts=rhc_restarts)
 
 start = time.time()
 nn_rhc.fit(X_train_std, y_train)
@@ -142,6 +146,8 @@ train_pred = nn_rhc.predict(X_train_std)
 valid_pred = nn_rhc.predict(X_valid_std)
 train_acc = accuracy_score(y_train, train_pred)
 valid_acc = accuracy_score(y_valid, valid_pred)
+test_pred = nn_rhc.predict(X_test_std)
+test_acc = accuracy_score(y_test, test_pred)
 
 rhc_losses.append(nn_rhc.loss)
 rhc_times.append(end-start)
@@ -152,15 +158,19 @@ rhc_valid.append(valid_acc)
 # print(f"Loss:\n{nn_rhc.loss}")
 print(f"Training Accuracy:\n  {train_acc}")
 print(f"Valid Accuracy:\n  {valid_acc}")
+print(f"Test Accuracy:\n  {test_acc}")
 
 
 # simulated annealing
 print("\n\n######### SA #########")
-mint = 0.001; maxt = 2; r = (mint/maxt)**(1/final_its)
-sch = mlr.GeomDecay(maxt, r, mint) #mlr.ArithDecay mlr.ExpDecay
+its = final_its
+# mint = 0.001; maxt = 1; r = (mint/maxt)**(1/final_its)
+# sch = mlr.GeomDecay(maxt, r, mint) #mlr.ArithDecay mlr.ExpDecay
+min_t = 0.0001; max_t = 1.5; r = 0.002 #r = (mint/maxt)**(1/i)
+sch = mlr.ArithDecay(max_t, r, min_t)
 nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
-                        algorithm='simulated_annealing', max_iters=final_its, random_state=seed,
-                        learning_rate=3.57,
+                        algorithm='simulated_annealing', max_iters=its, random_state=seed,
+                        learning_rate=0.5, #3.57,
                         early_stopping=False,
                         schedule=sch)
 
@@ -169,6 +179,8 @@ train_pred = nn_sa.predict(X_train_std)
 valid_pred = nn_sa.predict(X_valid_std)
 train_acc = accuracy_score(y_train, train_pred)
 valid_acc = accuracy_score(y_valid, valid_pred)
+test_pred = nn_sa.predict(X_test_std)
+test_acc = accuracy_score(y_test, test_pred)
 
 sa_losses.append(nn_rhc.loss)
 sa_times.append(end-start)
@@ -179,6 +191,7 @@ sa_valid.append(valid_acc)
 # print(f"Loss:\n{nn_sa.loss}")
 print(f"Training Accuracy:\n  {train_acc}")
 print(f"Valid Accuracy:\n  {valid_acc}")
+print(f"Test Accuracy:\n  {test_acc}")
 
 
 # #genetic algorithm
@@ -186,16 +199,18 @@ print("\n\n######### GA #########")
 
 nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
                         algorithm='genetic_alg', max_iters=final_its, random_state=seed,
-                        learning_rate=2.106,
+                        learning_rate=1.16, #2.106,
                         early_stopping=False,
                         pop_size=ga_pop,
-                        mutation_prob= ga_mut)
+                        mutation_prob=ga_mut)
 
 nn_ga.fit(X_train_std, y_train)
 train_pred = nn_ga.predict(X_train_std)
 valid_pred = nn_ga.predict(X_valid_std)
 train_acc = accuracy_score(y_train, train_pred)
 valid_acc = accuracy_score(y_valid, valid_pred)
+test_pred = nn_ga.predict(X_test_std)
+test_acc = accuracy_score(y_test, test_pred)
 
 ga_losses.append(nn_rhc.loss)
 ga_times.append(end-start)
@@ -206,6 +221,7 @@ ga_valid.append(valid_acc)
 # print(f"Loss:\n{nn_ga.loss}")
 print(f"Training Accuracy:\n  {train_acc}")
 print(f"Valid Accuracy:\n  {valid_acc}")
+print(f"Test Accuracy:\n  {test_acc}")
 
 
 ## Plotting
