@@ -50,9 +50,9 @@ print(f"\n######### PART 2 #########\n")
 
 for i in test_range:
     start = time.time()
-    print(f"Running for subproblem size: {i}")
-
     init = np.random.choice(2**(i+1), size=i, replace=False)
+    print(f"Running for subproblem size: {i}\n        Initialization: {init}")
+
     problem = mlr.DiscreteOpt(length=i, fitness_fn=fitness_cust, 
                           maximize=True, max_val=2**(i+1))
 
@@ -62,6 +62,7 @@ for i in test_range:
                                                             max_attempts=attempts,
                                                             random_state=seed, curve=True,
                                                             init_state=init, restarts=500)
+    print(f"        best RHC State: {best_rhc_state}")
     sub_end = time.time()
     rhc_fitnesses.append(best_rhc_fitness)
     rhc_times.append(sub_end - sub_start)
@@ -71,6 +72,7 @@ for i in test_range:
     best_sa_state, best_sa_fitness, sa_curve = mlr.simulated_annealing(problem, schedule=schedule, 
                                                             max_attempts=attempts, random_state=seed, 
                                                             curve=True, init_state=init)
+    print(f"        best SA State: {best_sa_state}")
     sub_end = time.time()
     sa_fitnesses.append(best_sa_fitness)
     sa_times.append(sub_end - sub_start)
@@ -79,16 +81,18 @@ for i in test_range:
     sub_start = time.time()
     best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=200, 
                                                             max_attempts=attempts, random_state=seed, 
-                                                            curve=True, mutation_prob=0.1)                                           
+                                                            curve=True, elite_dreg_ratio=0.5, mutation_prob=0.4)                                           
+    print(f"        best GA State: {best_ga_state}")
     sub_end = time.time()
     ga_fitnesses.append(best_ga_fitness)
     ga_times.append(sub_end - sub_start)
 
     ## MIMIC
     sub_start = time.time()
-    best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=300, 
+    best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=200, 
                                                     max_attempts=attempts, 
                                                     random_state=seed, curve=True)                                                   
+    print(f"        best MIMIC State: {best_m_state}")
     sub_end = time.time()
     m_fitnesses.append(best_m_fitness)
     m_times.append(sub_end - sub_start)
@@ -203,9 +207,9 @@ print(f"  Elapsed: {end - start}")
 ## Genetic Algorithm
 print(f"\n=== Genetic Algorithm ===")
 start = time.time()
-best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=500, 
+best_ga_state, best_ga_fitness, ga_curve = mlr.genetic_alg(problem, pop_size=200, 
                                                           max_attempts=attempts, random_state=seed, 
-                                                          curve=True, mutation_prob=0.1,
+                                                          curve=True, mutation_prob=0.4,
                                                           max_iters=max_it)
                                                           
 end = time.time()
@@ -224,7 +228,7 @@ print(f"  Elapsed: {end - start}")
 ## MIMIC
 print(f"\n=== MIMIC ===")
 start = time.time()
-best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=500, 
+best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=200, 
                                                 max_attempts=attempts, 
                                                 random_state=seed, curve=True,
                                                 max_iters=max_it)
