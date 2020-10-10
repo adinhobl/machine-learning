@@ -33,12 +33,12 @@ X_test_std = scaler.transform(X_test)
 print(f"Data Sizes: \n  X_train: {X_train_std.shape}\n  X_valid: {X_valid_std.shape}\n  X_test: {X_test.shape}\n  y_train: {y_train.shape}\n  y_valid: {y_valid.shape}\n  y_test: {y_test.shape}\n")
 
 ## Setup
-rhc_restarts = 1#100
-ga_pop = 2#100
-ga_mut = 0.01 #0.2
+rhc_restarts = 50
+ga_pop = 100
+ga_mut = 0.2
 hidden_nodes = [132]
-iters = [10,50,100,300,500,800,1000,2000] #,5000
-final_its = 5000 #10000
+iters = [10,50,100,300,500,800,1000,2000,5000] #,5000
+final_its = 10000
 rhc_losses = []
 rhc_times = []
 rhc_train = []
@@ -81,11 +81,11 @@ for i in iters:
 
     # simulated annealing
     its = i * 5
-    min_t = 0.0001; max_t = 1.5; r = 0.002 #r = (mint/maxt)**(1/i)
+    min_t = 0.0001; max_t = 1.0; r = 0.002 #r = (mint/maxt)**(1/i)
     sch = mlr.ArithDecay(max_t, r, min_t) #mlr.ArithDecay mlr.ExpDecay
     nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=False,
                             algorithm='simulated_annealing', max_iters=its, random_state=seed,
-                            learning_rate=0.5, #3.57
+                            learning_rate=0.75, #3.57
                             early_stopping=False,
                             schedule=sch)
 
@@ -166,11 +166,11 @@ print("\n\n######### SA #########")
 its = final_its
 # mint = 0.001; maxt = 1; r = (mint/maxt)**(1/final_its)
 # sch = mlr.GeomDecay(maxt, r, mint) #mlr.ArithDecay mlr.ExpDecay
-min_t = 0.0001; max_t = 1.5; r = 0.002 #r = (mint/maxt)**(1/i)
+min_t = 0.0001; max_t = 1.0; r = 0.002 #r = (mint/maxt)**(1/i)
 sch = mlr.ArithDecay(max_t, r, min_t)
 nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve=True,
                         algorithm='simulated_annealing', max_iters=its, random_state=seed,
-                        learning_rate=0.5, #3.57,
+                        learning_rate=0.75, #3.57,
                         early_stopping=False,
                         schedule=sch)
 

@@ -13,7 +13,7 @@ np.random.seed(seed=seed)
 # that the value of each term has to be either odd or even like the index, or its counts 
 # against the total.
 
-def toothymax(state, punishment=0):
+def orderedmax(state, punishment=0):
     """
     Total equals the sum of the number times its index. Numbers that aren't the same parity as 
     their index are punished. Reused numbers are punished.
@@ -52,7 +52,7 @@ m_times = []
 test_range = [4,6,8,10,15,20,30]
 final_prob_len = 60
 
-fitness_cust = mlr.CustomFitness(toothymax)
+fitness_cust = mlr.CustomFitness(orderedmax)
 schedule = mlr.ArithDecay()
 
 print(f"Attempts:            {attempts}")
@@ -119,7 +119,7 @@ print(f"\n\nPart 2 Time Elapsed: {part2_time}\n")
 print(f"######### PART 1 #########\n")
 
 print(f"  Problem Length: {final_prob_len}\n")
-print(f"  Max Fitness: {toothymax(np.arange(0,final_prob_len))}\n")
+print(f"  Max Fitness: {orderedmax(np.arange(0,final_prob_len))}\n")
 
 init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
@@ -264,7 +264,7 @@ print(f"\n\nPart 1 Time Elapsed: {part1_time}\n")
 print(f"######### PART 3 #########\n")
 
 print(f"  Problem Length: {final_prob_len}\n")
-print(f"  Max Fitness: {toothymax(np.arange(0,final_prob_len))}\n")
+print(f"  Max Fitness: {orderedmax(np.arange(0,final_prob_len))}\n")
 
 init = np.random.choice(final_prob_len, size=final_prob_len, replace=False)
 problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
