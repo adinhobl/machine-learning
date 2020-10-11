@@ -37,8 +37,6 @@ part2_time = 0.0
 
 print(f"\n######### PART 2 #########\n")
 
-
-
 for i in test_range:
     start = time.time()
     print(f"Running for subproblem size: {i}")
@@ -288,6 +286,53 @@ ax3.set_title(f"Runtime vs. Problem Size")
 
 plt.legend()
 plt.savefig("Opt3/Part2Times.png")
+
+
+print(f"######### PART 3 #########\n")
+
+print(f"  Problem Length: {final_prob_len}\n")
+
+init = np.random.choice([0,1], size=final_prob_len, replace=True)
+problem = mlr.DiscreteOpt(length=final_prob_len, fitness_fn=fitness_cust, 
+                          maximize=True, max_val=2)
+
+print(init)
+keeps = [0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95]
+_fitnesses = []
+_times = []
+
+start = time.time()
+for i in keeps:
+    it_start = time.time()
+    best_m_state, best_m_fitness, m_curve = mlr.mimic(problem, pop_size=400, 
+                                                max_attempts=attempts, 
+                                                random_state=seed, curve=True,
+                                                max_iters=175, keep_pct=i)
+    it_end = time.time()
+    print(i, best_m_fitness, best_m_state)
+    _fitnesses.append(best_m_fitness)
+    _times.append(it_end-it_start)
+
+end = time.time()
+part3_time = end-start
+
+print(f"\n\nTotal Time Elapsed: {part1_time + part2_time + part3_time}\n")
+
+
+# Plotting part 3
+print("Plotting Part 3\n\n")
+
+fig4 = plt.figure()
+ax4 = fig4.add_subplot(1,1,1)
+ax4.plot(keeps,_fitnesses)
+
+ax4.set_xlabel("Proportion Kept")
+ax4.set_ylabel("Final Fitness")
+ax4.set_title(f"Final Fitness vs. Proportion Kept Each Iteration")
+
+# plt.legend()
+plt.savefig("Opt3/Part3keep.png")
+
 
 ## Saving data
 part2df = pd.DataFrame()
