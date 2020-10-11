@@ -33,8 +33,8 @@ X_test_std = scaler.transform(X_test)
 print(f"Data Sizes: \n  X_train: {X_train_std.shape}\n  X_valid: {X_valid_std.shape}\n  X_test: {X_test.shape}\n  y_train: {y_train.shape}\n  y_valid: {y_valid.shape}\n  y_test: {y_test.shape}\n")
 
 ## Setup
-rhc_restarts = 50
-ga_pop = 100
+rhc_restarts = 30
+ga_pop = 50
 ga_mut = 0.2
 hidden_nodes = [132]
 iters = [10,50,100,300,500,800,1000,2000,5000] #,5000
@@ -97,7 +97,7 @@ for i in iters:
     train_acc = accuracy_score(y_train, train_pred)
     valid_acc = accuracy_score(y_valid, valid_pred)
 
-    sa_losses.append(nn_rhc.loss)
+    sa_losses.append(nn_sa.loss)
     sa_times.append(end-start)
     sa_train.append(train_acc)
     sa_valid.append(valid_acc)
@@ -120,7 +120,7 @@ for i in iters:
     train_acc = accuracy_score(y_train, train_pred)
     valid_acc = accuracy_score(y_valid, valid_pred)
 
-    ga_losses.append(nn_rhc.loss)
+    ga_losses.append(nn_ga.loss)
     ga_times.append(end-start)
     ga_train.append(train_acc)
     ga_valid.append(valid_acc)
@@ -174,7 +174,9 @@ nn_sa = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve
                         early_stopping=False,
                         schedule=sch)
 
+start = time.time()
 nn_sa.fit(X_train_std, y_train)
+end = time.time()
 train_pred = nn_sa.predict(X_train_std)
 valid_pred = nn_sa.predict(X_valid_std)
 train_acc = accuracy_score(y_train, train_pred)
@@ -182,7 +184,7 @@ valid_acc = accuracy_score(y_valid, valid_pred)
 test_pred = nn_sa.predict(X_test_std)
 test_acc = accuracy_score(y_test, test_pred)
 
-sa_losses.append(nn_rhc.loss)
+sa_losses.append(nn_sa.loss)
 sa_times.append(end-start)
 sa_train.append(train_acc)
 sa_valid.append(valid_acc)
@@ -203,8 +205,9 @@ nn_ga = mlr.NeuralNetwork(hidden_nodes=hidden_nodes, activation='sigmoid', curve
                         early_stopping=False,
                         pop_size=ga_pop,
                         mutation_prob=ga_mut)
-
+start = time.time()
 nn_ga.fit(X_train_std, y_train)
+end = time.time()
 train_pred = nn_ga.predict(X_train_std)
 valid_pred = nn_ga.predict(X_valid_std)
 train_acc = accuracy_score(y_train, train_pred)
@@ -212,7 +215,7 @@ valid_acc = accuracy_score(y_valid, valid_pred)
 test_pred = nn_ga.predict(X_test_std)
 test_acc = accuracy_score(y_test, test_pred)
 
-ga_losses.append(nn_rhc.loss)
+ga_losses.append(nn_ga.loss)
 ga_times.append(end-start)
 ga_train.append(train_acc)
 ga_valid.append(valid_acc)
@@ -275,7 +278,7 @@ ax4.plot(iters, ga_valid, label="Genetic Algorithm")
 
 ax4.set_xlabel("Iterations")
 ax4.set_ylabel("Validation Accuracy")
-ax4.set_title(f"Validation Accuracy vs. Iterations")
+ax4.set_title(f"Classification Accuracy vs. Iterations")
 
 plt.legend()
 plt.savefig("randomized-opt/NN/Part2valid.png")
