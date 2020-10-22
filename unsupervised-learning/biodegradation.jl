@@ -4,12 +4,57 @@ using MultivariateStats
 using ScikitLearn
 using Plots
 using CSV
+using DataFrames
+using StatsBase
+using Clustering: randindex, silhouettes, varinfo, vmeasure, mutualinfo
+
+## Set RNG
+RNG = 3552
 
 ## Import Data
 data = CSV.read("biodegradation.csv")
+data_stats = describe(data)
+label_counts = countmap(data[:(Class)])
+collect(label_counts[i] / size(data)[1] for i in keys(label_counts))
+
+
+coerce!(data, :Class=>Multiclass)
+schema(data)
+y, X = unpack(data, ==(:Class), colname->true)
+train, test = partition(eachindex(y), 0.7, shuffle=true, rng=123, stratify=values(data[:Class])) # gives 70:30 split
+
+train_counts = countmap(data[train,:Class])
+collect(train_counts[i] / size(train)[1] for i in keys(train_counts))
+
+test_counts = countmap(data[test,:Class])
+collect(test_counts[i] / size(test)[1] for i in keys(test_counts))
+
+standardizer = Standardizer()
+stand = machine(standardizer, X[train,:]) #only want to standardize on training distribution
+MLJ.fit!(stand)
+X_stand = MLJ.transform(stand, X);
+
+task(model) = !model.is_supervised
+models(task)
 
 ## Clustering Algorithms - Run the clustering algorithms on the datasets and describe what you see.
 # K-Means
+@load KMeans pkg=ParallelKMeans
+
+k_range = 2:10
+
+for i in k_range
+    model = KMeans(k=i, rng=RNG)
+end
+
+
+
+
+
+
+
+
+
 
 
 # Expectation Maximization
