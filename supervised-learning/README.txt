@@ -15,7 +15,7 @@
     ln -s ~/julia-1.5.0/bin/julia ~/.local/bin/
     ```
     where `~/.local/bin/` is a dir on your system's $PATH variable. Omit the
-    `mkdir ~/.local/bin/` line if you want to put it somewhere else .
+    `mkdir ~/.local/bin/` line if you want to put it somewhere else.
 
 2. Clone github repository
     Download the project from gitlab (https://github.com/adinhobl/Machine-Learning)

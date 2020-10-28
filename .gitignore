@@ -30,3 +30,4 @@ supervised-learning/*/.ipynb_checkpoints/
 *.gitignore
 *.mypy*
 *.vscode
+figures
