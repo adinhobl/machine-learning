@@ -31,3 +31,4 @@ supervised-learning/*/.ipynb_checkpoints/
 *.mypy*
 *.vscode
 figures
+checkpoints/
