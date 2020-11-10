@@ -9,13 +9,13 @@ include("WindyGridWorld.jl")
 
 env = WindyGridWorldEnv()
 
-# ns = length(get_observation_space(env))
+ns = 7 * 10
 na = length(get_actions(env))
 
 agent = Agent(
     policy=QBasedPolicy(
         learner=TDLearner(
-            approximator=TabularApproximator(;n_state=NX, n_action=na),
+            approximator=TabularApproximator(;n_state=ns, n_action=na),
             optimizer=Descent(0.5)
         ),
         explorer=EpsilonGreedyExplorer(0.1)
