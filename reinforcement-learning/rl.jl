@@ -1,16 +1,15 @@
-using ReinforcementLearning
 using Plots
-# using GridWorlds
-# using ReinforcementLearningBase
-using Reexport
+using GridWorlds
+using ReinforcementLearning
+using ReinforcementLearningBase
+using Flux: Optimise.Descent
 
 include("iteration_methods.jl")
-include("WindyGridWorld.jl")
 
-env = WindyGridWorldEnv()
+env = WindyGridWorld()
 
-ns = 7 * 10
-na = length(get_actions(env))
+ns = size(env.world)[2] * size(env.world)[3]
+na = length(get_legal_actions(env))
 
 agent = Agent(
     policy=QBasedPolicy(
