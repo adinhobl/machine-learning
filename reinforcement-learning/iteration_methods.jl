@@ -9,11 +9,11 @@ function policy_evaluation!(
     ;
     V::AbstractApproximator,
     π::AbstractPolicy,
-    model::AbstractEnvironmentModel,
+    model::AbstractGridWorld,
     γ::Float64 = 0.9,
     θ::Float64 = 1e-4,
 )
-    states, actions = 1:length(get_observation_space(model)), 1:length(get_action_space(model))
+    states, actions = 1:length(model.world[1,:,:]), 1:length(π.action_space)
     while true
         Δ = 0.0
         for s in states
@@ -39,7 +39,7 @@ function policy_improvement!(
     ;
     V::AbstractApproximator,
     π::AbstractPolicy,
-    model::AbstractEnvironmentModel,
+    model::AbstractGridWorld,
     γ::Float64 = 0.9,
 )
     states, actions = 1:length(get_observation_space(model)), 1:length(get_action_space(model))
@@ -67,7 +67,7 @@ function policy_iteration!(
     ;
     V::AbstractApproximator,
     π::AbstractPolicy,
-    model::AbstractEnvironmentModel,
+    model::AbstractGridWorld,
     γ::Float64 = 0.9,
     θ::Float64 = 1e-4,
     max_iter = typemax(Int),
