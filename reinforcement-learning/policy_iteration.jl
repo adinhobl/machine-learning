@@ -1,10 +1,90 @@
+using POMDPs
+using POMDPModelTools
 
+mutable struct PolicyIterationPolicy{P<:AbstractVector} <: Policy
+    policy::P
+end
 
+function PolicyIterationPolicy(mdp::Union{MDP, POMDP})
+    return PolicyIterationPolicy(zeros(Int64, length(states(mdp))))
+end
 
+mutable struct PolicyIterationSolver <: Solver
+    max_iterations::Int64 = 100
+    belres::Float64 = 1e-3
+    verbose::Bool = false
+    include_Q::Bool
+    init_util::Vector{Float64}
+    trajectory::Vector{Float64} # to keep track of reward per episode
+end
 
+# default constructor
+function PolicyIterationSolver(;max_iterations::Int64 = 100,
+                                belres::Float64 = 1e-3,
+                                verbose::Bool = false,
+                                include_Q::Bool = true,
+                                init_util::Vector{Float64}=Vector{Float64}(undef, 0),
+                                trajectory::Vector{Float64}=Vector{Float64}(undef, 0))
+    return PolicyIterationSolver(max_iterations, belres, verbose, include_Q, init_util, trajectory)
+end
 
+# solve policy iteration
+function solve(solver::PolicyIterationSolver, mdp::MDP)
+    # solver parameters
+    m_i = solver.max_iterations
+    b_r = solver.belres
+    d_f = discount(mdp)
+    ns = length(states(mpd))
+    na = length(actions(mdp))
 
+    # initialize the utility and Q-matrix
+    if !isempty(solver.init_util)
+        @assert length(solver.init_util) == ns "Input utility dimension mismatch"
+        util = solver.init_util
+    else
+        util = zeros(ns)
+    end
 
+    if solver.include_Q
+        qmat = zeros(ns,na)
+    end
+    pol = zeros(Int64, ns)
+
+    total_time = 0.0
+    iter_time = 0.0
+
+    # create ordered list of states for fast iteration
+    state_space = ordered_states(mdp)
+
+    # main loop
+    for i in 1:max_iterations
+        residual = 0.0
+        iter_time = @elapsed begin
+        
+        policy_evaluation!(; V = V, π = π, model = model, γ = γ, θ = θ)
+        policy_improvement!(; V = V, π = π, model = model, γ = γ) && break
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        end # time
+
+        total_time += iter_time
+        residual < belres ? break : nothing
+    end # main loop
+
+end
 
 ##########################################################
 

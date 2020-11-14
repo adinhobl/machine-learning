@@ -27,6 +27,7 @@ mdp = GridWorld()
 mdp.tprob=1.0
 
 # Value Iteration
+
 solver = ValueIterationSolver(max_iterations=100, belres=1e-4; verbose=true)
 policy = solve(solver, mdp)
 
